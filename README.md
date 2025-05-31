@@ -12,12 +12,6 @@ This is a sleek and interactive **To-Do List Web Application** built using **HTM
 - ⌨️ Keyboard support (Press Enter to add)
 - 🎨 Modern glassmorphism UI
 - 🔒 Clean, responsive, and accessible design
-
-
-## 🔗 Live Demo
-
-👉 [View Live on Netlify (or GitHub Pages)]
-  
 <!-- Replace with your actual deployed link if hosted -->
 
 ## 🛠️ Tech Stack
