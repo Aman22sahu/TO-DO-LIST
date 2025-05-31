@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Stylish To-Do List</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+  body {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 50px 20px;
+    color: #f0f0f0;
+  }
+
+  .container {
+    background: #1e1e2f;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+    width: 400px;
+    padding: 35px 30px;
+    backdrop-filter: blur(10px);
+  }
+
+  h2 {
+    font-weight: 600;
+    font-size: 32px;
+    margin-bottom: 8px;
+    letter-spacing: 1.2px;
+  }
+
+  p.subtitle {
+    font-style: italic;
+    color: #b0aee0;
+    margin-bottom: 30px;
+  }
+
+  .input-group {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+  }
+
+  input[type="text"] {
+    flex: 1;
+    padding: 15px 20px;
+    font-size: 16px;
+    border-radius: 50px;
+    border: none;
+    background: #2a2a3f;
+    color: #f0f0f0;
+    box-shadow: inset 3px 3px 6px #1a1a2a,
+                inset -3px -3px 6px #3a3a5a;
+    transition: box-shadow 0.3s ease;
+  }
+
+  input[type="text"]::placeholder {
+    color: #b0aee0aa;
+  }
+
+  input[type="text"]:focus {
+    outline: none;
+    box-shadow: inset 3px 3px 8px #564fcf,
+                inset -3px -3px 8px #8275ff;
+  }
+
+  button.add-btn {
+    background: linear-gradient(145deg, #7f83ff, #4a4ef9);
+    border: none;
+    border-radius: 50px;
+    padding: 0 30px;
+    font-weight: 600;
+    font-size: 18px;
+    color: white;
+    cursor: pointer;
+    box-shadow: 5px 5px 10px #3b3f9b,
+                -5px -5px 10px #8c92ff;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  button.add-btn:hover {
+    background: linear-gradient(145deg, #5659f7, #2e32e0);
+    box-shadow: 7px 7px 12px #2227a3,
+                -7px -7px 12px #797eff;
+  }
+
+  ul.task-list {
+    list-style: none;
+    padding-left: 0;
+    max-height: 320px;
+    overflow-y: auto;
+  }
+
+  ul.task-list li {
+    background: #292942;
+    margin-bottom: 16px;
+    padding: 15px 20px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    font-size: 17px;
+    color: #ccc;
+    cursor: pointer;
+    box-shadow: 3px 3px 6px #1c1c2c,
+                -3px -3px 6px #3c3c5c;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+
+  ul.task-list li:hover {
+    background: #3b3b5c;
+    color: #e0e0ff;
+  }
+
+  ul.task-list li.completed {
+    color: #777ab9;
+    text-decoration: line-through;
+    background: #1b1b2f;
+    box-shadow: inset 3px 3px 6px #0a0a1a,
+                inset -3px -3px 6px #2b2b4b;
+  }
+
+  .delete-btn {
+    margin-left: auto;
+    background: transparent;
+    border: none;
+    font-size: 22px;
+    color: #ff6b6b;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    user-select: none;
+  }
+
+  .delete-btn:hover {
+    color: #ff3b3b;
+  }
+
+  /* Scrollbar styling */
+  ul.task-list::-webkit-scrollbar {
+    width: 7px;
+  }
+
+  ul.task-list::-webkit-scrollbar-thumb {
+    background: #7a7efc;
+    border-radius: 10px;
+  }
+
+  ul.task-list::-webkit-scrollbar-track {
+    background: #1e1e2f;
+  }
+</style>
+</head>
+<body>
+
+<div class="container" role="main" aria-label="Stylish To-Do List">
+  <h2>What's on your plate today?</h2>
+  <p class="subtitle">Write it down, crush it later 💪</p>
+  <div class="input-group">
+    <input type="text" id="taskInput" placeholder="Add your next big thing..." aria-label="Enter a task" autocomplete="off" />
+    <button class="add-btn" id="addBtn">Add</button>
+  </div>
+
+  <ul class="task-list" id="taskList" aria-live="polite" aria-relevant="additions removals"></ul>
+</div>
+
+<script>
+  const input = document.getElementById('taskInput');
+  const addBtn = document.getElementById('addBtn');
+  const taskList = document.getElementById('taskList');
+
+  function createTask(text) {
+    const li = document.createElement('li');
+    li.textContent = text;
+
+    li.addEventListener('click', () => {
+      li.classList.toggle('completed');
+    });
+
+    const delBtn = document.createElement('button');
+    delBtn.textContent = '×';
+    delBtn.className = 'delete-btn';
+    delBtn.title = 'Remove task';
+
+    delBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      taskList.removeChild(li);
+    });
+
+    li.appendChild(delBtn);
+    return li;
+  }
+
+  function addTask() {
+    const val = input.value.trim();
+    if (!val) {
+      alert("Hey, don't forget to type something before adding!");
+      return;
+    }
+    taskList.appendChild(createTask(val));
+    input.value = '';
+    input.focus();
+  }
+
+  addBtn.addEventListener('click', addTask);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') addTask();
+  });
+</script>
+
+</body>
+</html>
